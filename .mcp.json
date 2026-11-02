@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "whatevernote": {
+      "type": "http",
+      "url": "https://mcp.whatevernote.com/mcp"
+    }
+  }
+}

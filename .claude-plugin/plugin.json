@@ -1,0 +1,9 @@
+{
+  "name": "whatevernote",
+  "version": "0.1.0",
+  "description": "Connect Claude to your whatevernote notes (read, search, create, append) with skills that teach it how notes work.",
+  "author": { "name": "whatevernote" },
+  "homepage": "https://whatevernote.com",
+  "skills": "./skills",
+  "mcpServers": "./.mcp.json"
+}

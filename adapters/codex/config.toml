@@ -1,0 +1,4 @@
+# PLANNED (not yet tested with Codex): add to ~/.codex/config.toml
+# The URL must match connector/server.json (checked by scripts/validate.mjs).
+[mcp_servers.whatevernote]
+url = "https://mcp.whatevernote.com/mcp"

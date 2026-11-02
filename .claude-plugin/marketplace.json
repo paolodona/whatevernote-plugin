@@ -1,0 +1,11 @@
+{
+  "name": "whatevernote",
+  "owner": { "name": "whatevernote" },
+  "plugins": [
+    {
+      "name": "whatevernote",
+      "source": "./",
+      "description": "whatevernote connector + skills for Claude"
+    }
+  ]
+}
