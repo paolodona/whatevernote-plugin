@@ -1,0 +1,17 @@
+{
+  "description": "05-growth-guard-consolidation",
+  "source": {
+    "id": "00000000-0000-4000-8000-000000000005",
+    "title": "1:1 Alice Johnson - 12 March"
+  },
+  "mode": "confirm-before-write",
+  "expect": {
+    "append": [
+      "Alice Johnson"
+    ],
+    "create": [],
+    "skip": [],
+    "needsInput": false,
+    "consolidation": true
+  }
+}

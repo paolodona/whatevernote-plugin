@@ -72,3 +72,21 @@ test('plugin manifest problems are caught', () => {
   assert.ok(withCopy((d) => edit(d, '.claude-plugin/marketplace.json', (t) => t.replace('"name": "whatevernote",\n      "source"', '"name": "other",\n      "source"'))).some((e) => e.includes('no plugin entry')));
   assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/.claude-plugin/plugin.json', (t) => t.replace('./skills', './nope'))).some((e) => e.includes('does not exist')));
 });
+
+const INGEST = 'plugins/whatevernote/skills/ingest-meeting-note/SKILL.md';
+
+test('ingest skill: confirmation, append-only, untrusted and degrade rules are required', () => {
+  const rule = (mutate, needle) => assert.ok(withCopy((d) => edit(d, INGEST, mutate)).some((e) => e.includes(needle)), `expected error about ${needle}`);
+  rule((t) => t.replace(/confirm\w*/gi, 'check'), 'confirmation step');
+  rule((t) => t.replace(/\bnever (edit|rewrite)/gi, 'may $1').replace(/you never (edit|rewrite)/gi, 'you may $1').replace(/only ever \*{0,2}adds to the end/gi, 'adds').replace(/append-only/gi, 'flexible'), 'append-only wording');
+  rule((t) => t.replace(/here is what I would append/gi, 'done'), 'read-only degradation');
+  rule((t) => t.replace(/search_notes/g, 'list_notes').replace(/search first/gi, 'look'), 'search-before-write');
+  rule((t) => t.replace(/20 or more dated entries/g, 'many entries'), 'growth guard');
+  rule((t) => t.replace(/Source: <source title> \(id: <source id>\)/g, 'Source: x'), 'back-reference');
+  rule((t) => t.replace(/untrusted/gi, 'careful'), 'untrusted');
+});
+
+test('ingest skill must exist and be listed in AGENTS.md', () => {
+  assert.ok(withCopy((d) => rmSync(join(d, 'plugins/whatevernote/skills/ingest-meeting-note'), { recursive: true })).some((e) => e.includes('required skill missing')));
+  assert.ok(withCopy((d) => edit(d, 'AGENTS.md', (t) => t.replace(/`ingest-meeting-note`/g, 'the ingest skill'))).some((e) => e.includes('skill ingest-meeting-note not listed')));
+});

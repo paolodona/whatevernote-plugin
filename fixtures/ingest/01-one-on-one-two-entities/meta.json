@@ -1,0 +1,18 @@
+{
+  "description": "01-one-on-one-two-entities",
+  "source": {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "title": "1:1 Alice Johnson - 12 March"
+  },
+  "mode": "confirm-before-write",
+  "expect": {
+    "append": [
+      "Alice Johnson",
+      "Atlas launch"
+    ],
+    "create": [],
+    "skip": [],
+    "needsInput": false,
+    "consolidation": false
+  }
+}
