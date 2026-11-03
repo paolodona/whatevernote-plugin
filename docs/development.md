@@ -22,12 +22,19 @@ Rule of thumb: anything a user should see goes in `plugins/whatevernote/`; anyth
 building, verifying or hosting the plugin goes outside it. Skill bodies are instructions for the
 model, not user docs, so keep them free of maintainer notes.
 
+## Ingest fixtures and manual eval
+
+`fixtures/ingest/` holds sample notes and expected proposals for the `ingest-meeting-note` skill (kept outside
+`plugins/` so they never ship). `docs/eval-ingest.md` is the owner dry-run protocol.
+
 ## Checks
 
 ```bash
 node scripts/validate.mjs                 # adapters agree with connector/server.json, skills valid,
                                           # plugin folder holds no dev-only content
 node --test scripts/validate.test.mjs     # validator self-tests (must fail on bad input)
+node scripts/check-fixtures.mjs           # ingest proposal-format checker on the fixtures
+node --test scripts/check-fixtures.test.mjs  # checker self-tests
 ```
 
 No dependencies. Requires Node 18+.

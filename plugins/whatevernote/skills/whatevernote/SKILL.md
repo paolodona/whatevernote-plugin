@@ -60,3 +60,9 @@ fail silently and do not try to work around it.
 - Pass an `idempotency_key` to `create_note` when a retry is possible, so a repeat cannot create
   a duplicate.
 - Maximum 64 KB of Markdown per call.
+
+## Meetings and people
+
+To carry a captured meeting or 1:1 note over to the notes about the people and projects in it, use
+the `ingest-meeting-note` skill: it proposes the additions first and only appends after the user
+confirms.

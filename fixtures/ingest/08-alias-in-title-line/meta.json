@@ -1,0 +1,17 @@
+{
+  "description": "08-alias-in-title-line",
+  "source": {
+    "id": "00000000-0000-4000-8000-000000000008",
+    "title": "1:1 Bob - 5 May"
+  },
+  "mode": "confirm-before-write",
+  "expect": {
+    "append": [
+      "Robert Chen (aka Bob)"
+    ],
+    "create": [],
+    "skip": [],
+    "needsInput": false,
+    "consolidation": false
+  }
+}

@@ -11,6 +11,20 @@ const BANNED = /\b(tags?|folders?|templates?|due dates?|reminders?)\b/i;
 const TOOL_LIKE = /^(whoami|(list|read|search|get|create|append|delete|update|star|restore|edit)_[a-z_]+)$/;
 const PLUGIN_DIR = join('plugins', 'whatevernote');
 const DEV_ONLY = /\b(private repo(sitory)?|plan \d+|monorepo|validate\.mjs|node --test|draft\/)/i;
+// Skills that write to notes must carry these rules in their text (each is a regex over the SKILL.md body).
+const REQUIRED_RULES = {
+  'ingest-meeting-note': [
+    [/nothing is written until you confirm/i, 'confirmation step (nothing is written before the user confirms)'],
+    [/append-only|only ever \*{0,2}adds to the end/i, 'append-only wording'],
+    [/never (edit|rewrite)[^\n]*|you never (edit|rewrite)/i, 'no edit/rewrite wording'],
+    [/here is what I would append/i, 'read-only degradation ("here is what I would append")'],
+    [/search first|`search_notes`/i, 'search-before-write step'],
+    [/20 or more dated entries/i, 'growth guard threshold'],
+    [/consolidation/i, 'consolidation proposal (not performed)'],
+    [/idempotency_key/i, 'idempotency key for create_note'],
+    [/Source: <source title> \(id: <source id>\)/, 'back-reference by title and id'],
+  ],
+};
 const SEMVER = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
 
 function readJson(path, errors) {
@@ -138,8 +152,11 @@ export function validate(root) {
     }
     if (!/untrusted/i.test(text)) errors.push(`${file}: must state that note content is untrusted data`);
     if (DEV_ONLY.test(text)) errors.push(`${file}: contains maintainer-only wording (skills are model instructions, not dev docs)`);
+    for (const [re, what] of REQUIRED_RULES[d] ?? []) if (!re.test(text)) errors.push(`${file}: required rule missing: ${what}`);
+    if (existsSync(agentsPath) && !readFileSync(agentsPath, 'utf8').includes(`\`${d}\``)) errors.push(`AGENTS.md: skill ${d} not listed`);
     checkText(file, text, tools, errors);
   }
+  for (const name of Object.keys(REQUIRED_RULES)) if (!skillDirs.includes(name)) errors.push(`${PLUGIN_DIR}/skills/${name}: required skill missing`);
   const core = join(PLUGIN_DIR, 'skills', 'whatevernote', 'SKILL.md');
   if (existsSync(p(core))) {
     const t = readFileSync(p(core), 'utf8');

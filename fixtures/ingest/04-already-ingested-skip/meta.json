@@ -1,0 +1,19 @@
+{
+  "description": "04-already-ingested-skip",
+  "source": {
+    "id": "00000000-0000-4000-8000-000000000004",
+    "title": "1:1 Alice Johnson - 12 March"
+  },
+  "mode": "confirm-before-write",
+  "expect": {
+    "append": [
+      "Atlas launch"
+    ],
+    "create": [],
+    "skip": [
+      "Alice Johnson"
+    ],
+    "needsInput": false,
+    "consolidation": false
+  }
+}
