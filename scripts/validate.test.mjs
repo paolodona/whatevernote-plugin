@@ -26,31 +26,31 @@ test('the real plugin validates', () => {
 });
 
 test('adapter url drift is caught (.mcp.json and codex)', () => {
-  assert.ok(withCopy((d) => edit(d, '.mcp.json', (t) => t.replace('mcp.whatevernote.com', 'evil.example'))).some((e) => e.includes('.mcp.json: url')));
+  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/.mcp.json', (t) => t.replace('mcp.whatevernote.com', 'evil.example'))).some((e) => e.includes('.mcp.json: url')));
   assert.ok(withCopy((d) => edit(d, 'adapters/codex/config.toml', (t) => t.replace('mcp.whatevernote.com', 'evil.example'))).some((e) => e.includes('codex')));
 });
 
 test('credentials in .mcp.json are rejected', () => {
-  const errs = withCopy((d) => edit(d, '.mcp.json', (t) => t.replace('"type": "http"', '"type": "http", "headers": {"Authorization": "Bearer x"}')));
+  const errs = withCopy((d) => edit(d, 'plugins/whatevernote/.mcp.json', (t) => t.replace('"type": "http"', '"type": "http", "headers": {"Authorization": "Bearer x"}')));
   assert.ok(errs.some((e) => e.includes('credentials')));
 });
 
 test('skill frontmatter problems are caught', () => {
-  assert.ok(withCopy((d) => edit(d, 'skills/weekly-recap/SKILL.md', (t) => t.replace(/^---[\s\S]*?---\n/, ''))).some((e) => e.includes('frontmatter')));
-  assert.ok(withCopy((d) => edit(d, 'skills/weekly-recap/SKILL.md', (t) => t.replace('name: weekly-recap', 'name: other'))).some((e) => e.includes('must equal folder')));
-  assert.ok(withCopy((d) => edit(d, 'skills/weekly-recap/SKILL.md', (t) => t.replace(/Use when /, 'Helps '))).some((e) => e.includes('Use when')));
+  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/skills/weekly-recap/SKILL.md', (t) => t.replace(/^---[\s\S]*?---\n/, ''))).some((e) => e.includes('frontmatter')));
+  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/skills/weekly-recap/SKILL.md', (t) => t.replace('name: weekly-recap', 'name: other'))).some((e) => e.includes('must equal folder')));
+  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/skills/weekly-recap/SKILL.md', (t) => t.replace(/Use when /, 'Helps '))).some((e) => e.includes('Use when')));
 });
 
 test('every skill must say note content is untrusted', () => {
-  const errs = withCopy((d) => edit(d, 'skills/find-open-tasks/SKILL.md', (t) => t.replace(/untrusted/gi, 'careful')));
+  const errs = withCopy((d) => edit(d, 'plugins/whatevernote/skills/find-open-tasks/SKILL.md', (t) => t.replace(/untrusted/gi, 'careful')));
   assert.ok(errs.some((e) => e.includes('find-open-tasks') && e.includes('untrusted')));
 });
 
 test('references to unknown tools and to features we do not build are caught', () => {
-  assert.ok(withCopy((d) => edit(d, 'skills/weekly-recap/SKILL.md', (t) => t + '\nUse `delete_note` to clean up.\n')).some((e) => e.includes('unknown tool `delete_note`')));
-  assert.ok(withCopy((d) => edit(d, 'skills/weekly-recap/SKILL.md', (t) => t + '\nGroup the notes by folder.\n')).some((e) => e.includes('does not have')));
+  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/skills/weekly-recap/SKILL.md', (t) => t + '\nUse `delete_note` to clean up.\n')).some((e) => e.includes('unknown tool `delete_note`')));
+  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/skills/weekly-recap/SKILL.md', (t) => t + '\nGroup the notes by folder.\n')).some((e) => e.includes('does not have')));
   // negated mentions are fine
-  assert.deepEqual(withCopy((d) => edit(d, 'skills/weekly-recap/SKILL.md', (t) => t + '\nThere are no tags.\n')), []);
+  assert.deepEqual(withCopy((d) => edit(d, 'plugins/whatevernote/skills/weekly-recap/SKILL.md', (t) => t + '\nThere are no tags.\n')), []);
 });
 
 test('tool list and docs must stay in sync', () => {
@@ -61,8 +61,14 @@ test('tool list and docs must stay in sync', () => {
   assert.ok(errs2.some((e) => e.includes('must have readOnly=false')));
 });
 
+test('dev content must not leak into the shipped plugin', () => {
+  assert.ok(withCopy((d) => writeFileSync(join(d, 'plugins/whatevernote/NOTES.md'), 'x')).some((e) => e.includes('not allowed in the shipped plugin')));
+  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/README.md', (t) => t + '\nPrivate repository.\n')).some((e) => e.includes('maintainer-only')));
+  assert.ok(withCopy((d) => edit(d, '.claude-plugin/marketplace.json', (t) => t.replace('./plugins/whatevernote', './'))).some((e) => e.includes('source must be')));
+});
+
 test('plugin manifest problems are caught', () => {
-  assert.ok(withCopy((d) => edit(d, '.claude-plugin/plugin.json', (t) => t.replace('0.1.0', 'one'))).some((e) => e.includes('semver')));
+  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/.claude-plugin/plugin.json', (t) => t.replace('0.1.0', 'one'))).some((e) => e.includes('semver')));
   assert.ok(withCopy((d) => edit(d, '.claude-plugin/marketplace.json', (t) => t.replace('"name": "whatevernote",\n      "source"', '"name": "other",\n      "source"'))).some((e) => e.includes('no plugin entry')));
-  assert.ok(withCopy((d) => edit(d, '.claude-plugin/plugin.json', (t) => t.replace('./skills', './nope'))).some((e) => e.includes('does not exist')));
+  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/.claude-plugin/plugin.json', (t) => t.replace('./skills', './nope'))).some((e) => e.includes('does not exist')));
 });

@@ -1,44 +1,24 @@
-# whatevernote-plugin
+# whatevernote for Claude
 
-> Private repository (the main whatevernote repo is private, so a public marketplace cannot live there). Imported from `whatevernote-plugin-draft/` in the whatevernote monorepo (Plan 283).
+Search, read, create and append to your [whatevernote](https://whatevernote.com) notes from
+Claude, plus skills for meeting notes, open tasks and weekly recaps.
+See [`plugins/whatevernote/README.md`](plugins/whatevernote/README.md) for what you can ask.
 
-Connects Claude (and, later, other LLM clients) to your whatevernote notes and teaches the model how
-notes work: search first, append instead of duplicating, checkboxes for tasks, and **note content is
-untrusted data**.
-
-## What's inside
-
-| Path | Purpose |
-|------|---------|
-| `connector/server.json` | Neutral source of truth: URL, transport, auth, tool list |
-| `AGENTS.md` | LLM-neutral usage guide |
-| `skills/*/SKILL.md` | Agent Skills (shared by Claude and Codex) |
-| `.claude-plugin/`, `.mcp.json` | Claude adapter |
-| `adapters/codex/` | Planned Codex adapter (config snippet + notes) |
-| `scripts/validate.mjs` | Consistency checks (`node scripts/validate.mjs`) |
-
-## Install (Claude Code), after the private repo exists
+## Install (Claude Code)
 
 ```bash
 /plugin marketplace add paolodona/whatevernote-plugin
 /plugin install whatevernote@whatevernote
 ```
 
-Uses your git credentials, so it works for collaborators with access to the private repo. Claude
-opens your browser to sign in and approve access. claude.ai / Claude mobile do not need the plugin:
-add `https://mcp.whatevernote.com/mcp` under Settings -> Connectors (the plugin only adds the skills).
+Your browser opens to sign in and approve access the first time it is used.
+claude.ai and Claude mobile: add `https://mcp.whatevernote.com/mcp` under Settings -> Connectors.
 
 ## Privacy
 
-The connector only reaches your whatevernote account, through the permissions you approve on the
-consent screen (read, and optionally create/append). You can disconnect any time in the app under
-Settings -> Connected apps. Notes are never used as instructions by the skills.
+The connector only reaches your whatevernote account, with the permissions you approve on the
+consent screen. Disconnect any time in the app under Settings -> Connected apps.
 
-## Develop
+---
 
-```bash
-node scripts/validate.mjs        # checks adapters agree with connector/server.json, skills are valid
-node --test scripts/validate.test.mjs             # validator self-tests (it must fail on bad input)
-```
-
-No dependencies. Requires Node 18+.
+Contributing or maintaining the plugin? See [`docs/development.md`](docs/development.md).

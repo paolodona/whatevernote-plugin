@@ -9,6 +9,8 @@ import { fileURLToPath } from 'node:url';
 const NEGATION = /\b(no|not|never|nor|cannot|can't|don't|doesn't|without|invent)\b/i;
 const BANNED = /\b(tags?|folders?|templates?|due dates?|reminders?)\b/i;
 const TOOL_LIKE = /^(whoami|(list|read|search|get|create|append|delete|update|star|restore|edit)_[a-z_]+)$/;
+const PLUGIN_DIR = join('plugins', 'whatevernote');
+const DEV_ONLY = /\b(private repo(sitory)?|plan \d+|monorepo|validate\.mjs|node --test|draft\/)/i;
 const SEMVER = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
 
 function readJson(path, errors) {
@@ -34,6 +36,7 @@ function frontmatter(text) {
 export function validate(root) {
   const errors = [];
   const p = (...s) => join(root, ...s);
+  const pp = (...s) => join(root, PLUGIN_DIR, ...s);
 
   // --- connector (source of truth)
   const server = readJson(p('connector', 'server.json'), errors);
@@ -54,7 +57,7 @@ export function validate(root) {
   }
 
   // --- Claude adapter agrees
-  const mcp = readJson(p('.mcp.json'), errors);
+  const mcp = readJson(pp('.mcp.json'), errors);
   if (mcp && server) {
     const s = mcp.mcpServers?.whatevernote;
     if (!s) errors.push('.mcp.json: mcpServers.whatevernote missing');
@@ -64,22 +67,34 @@ export function validate(root) {
       if (JSON.stringify(s).match(/token|secret|apikey|api_key|authorization/i)) errors.push('.mcp.json: must not contain credentials');
     }
   }
-  const plugin = readJson(p('.claude-plugin', 'plugin.json'), errors);
+  const plugin = readJson(pp('.claude-plugin', 'plugin.json'), errors);
   if (plugin) {
     if (!/^[a-z0-9-]+$/.test(plugin.name ?? '')) errors.push('plugin.json: name must be kebab-case');
     if (!SEMVER.test(plugin.version ?? '')) errors.push('plugin.json: version must be semver');
     if (!plugin.description) errors.push('plugin.json: description missing');
     for (const key of ['skills', 'mcpServers']) {
       const ref = plugin[key];
-      if (typeof ref === 'string' && !existsSync(resolve(root, ref))) errors.push(`plugin.json: ${key} path ${ref} does not exist`);
+      if (typeof ref === 'string' && !existsSync(resolve(root, PLUGIN_DIR, ref))) errors.push(`plugin.json: ${key} path ${ref} does not exist`);
     }
   }
   const market = readJson(p('.claude-plugin', 'marketplace.json'), errors);
   if (market && plugin) {
     const entry = (market.plugins ?? []).find((x) => x.name === plugin.name);
     if (!entry) errors.push(`marketplace.json: no plugin entry named ${plugin.name}`);
-    else if (typeof entry.source === 'string' && !existsSync(resolve(root, entry.source))) errors.push(`marketplace.json: source ${entry.source} does not exist`);
+    else if (typeof entry.source === 'string') {
+      if (!existsSync(resolve(root, entry.source))) errors.push(`marketplace.json: source ${entry.source} does not exist`);
+      else if (resolve(root, entry.source) !== resolve(root, PLUGIN_DIR)) errors.push(`marketplace.json: source must be ./${PLUGIN_DIR.replace(/\\/g, '/')} so dev files are not shipped to users`);
+    }
   }
+
+  // --- the shipped plugin folder holds user-facing content only
+  const ALLOWED = new Set(['.claude-plugin', '.mcp.json', 'skills', 'README.md']);
+  if (existsSync(pp())) {
+    for (const entry of readdirSync(pp())) if (!ALLOWED.has(entry)) errors.push(`${PLUGIN_DIR}/${entry}: not allowed in the shipped plugin (dev files belong outside it)`);
+    const readme = pp('README.md');
+    if (!existsSync(readme)) errors.push(`${PLUGIN_DIR}/README.md: missing user-facing README`);
+    else if (DEV_ONLY.test(readFileSync(readme, 'utf8'))) errors.push(`${PLUGIN_DIR}/README.md: contains maintainer-only wording`);
+  } else errors.push(`${PLUGIN_DIR}: missing`);
 
   // --- Codex adapter agrees (planned)
   const codex = p('adapters', 'codex', 'config.toml');
@@ -99,11 +114,11 @@ export function validate(root) {
   }
 
   // --- skills
-  const skillsDir = p('skills');
+  const skillsDir = pp('skills');
   const skillDirs = existsSync(skillsDir) ? readdirSync(skillsDir).filter((d) => statSync(join(skillsDir, d)).isDirectory()) : [];
-  if (skillDirs.length === 0) errors.push('skills/: no skills found');
+  if (skillDirs.length === 0) errors.push(`${PLUGIN_DIR}/skills/: no skills found`);
   for (const d of skillDirs) {
-    const file = join('skills', d, 'SKILL.md');
+    const file = join(PLUGIN_DIR, 'skills', d, 'SKILL.md');
     if (!existsSync(p(file))) {
       errors.push(`${file}: missing`);
       continue;
@@ -122,9 +137,10 @@ export function validate(root) {
       if (!/\buse when\b/i.test(fm.description)) errors.push(`${file}: description should say when to use it ("Use when ...")`);
     }
     if (!/untrusted/i.test(text)) errors.push(`${file}: must state that note content is untrusted data`);
+    if (DEV_ONLY.test(text)) errors.push(`${file}: contains maintainer-only wording (skills are model instructions, not dev docs)`);
     checkText(file, text, tools, errors);
   }
-  const core = join('skills', 'whatevernote', 'SKILL.md');
+  const core = join(PLUGIN_DIR, 'skills', 'whatevernote', 'SKILL.md');
   if (existsSync(p(core))) {
     const t = readFileSync(p(core), 'utf8');
     for (const name of tools) if (!t.includes(`\`${name}\``)) errors.push(`${core}: core skill must document tool ${name}`);

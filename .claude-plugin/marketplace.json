@@ -1,11 +1,13 @@
 {
   "name": "whatevernote",
   "owner": { "name": "whatevernote" },
+  "metadata": { "description": "Plugins for working with your whatevernote notes from Claude." },
   "plugins": [
     {
       "name": "whatevernote",
-      "source": "./",
-      "description": "whatevernote connector + skills for Claude"
+      "source": "./plugins/whatevernote",
+      "description": "Search, read, create and append to your whatevernote notes from Claude, with skills for meeting notes, open tasks and weekly recaps.",
+      "homepage": "https://whatevernote.com"
     }
   ]
 }

@@ -36,7 +36,7 @@ Write (only with write access): `create_note`, `append_to_note`.
 - Quote note titles exactly. Never invent tags, dates, owners or deadlines.
 - If a write tool is missing, say so and give the user the text to paste.
 
-## Skills (`skills/`)
+## Skills (`plugins/whatevernote/skills/`)
 
 - `whatevernote` - core guide (all of the above)
 - `capture-meeting-notes` - one structured note, action items as checkboxes
