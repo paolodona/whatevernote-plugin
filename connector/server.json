@@ -2,7 +2,7 @@
   "$comment": "Neutral source of truth for the whatevernote connector. Adapters (.mcp.json, adapters/codex) must agree with it; scripts/validate.mjs enforces that.",
   "name": "whatevernote",
   "title": "whatevernote notes",
-  "description": "Read, search, create and append to your whatevernote notes.",
+  "description": "Read, search, create, edit, star and trash your whatevernote notes.",
   "url": "https://mcp.whatevernote.com/mcp",
   "transport": "streamable-http",
   "auth": {
@@ -18,6 +18,10 @@
     { "name": "get_recent_activity", "scope": "notes:read", "readOnly": true },
     { "name": "get_note_stats", "scope": "notes:read", "readOnly": true },
     { "name": "create_note", "scope": "notes:write", "readOnly": false },
-    { "name": "append_to_note", "scope": "notes:write", "readOnly": false }
+    { "name": "append_to_note", "scope": "notes:write", "readOnly": false },
+    { "name": "edit_note", "scope": "notes:write", "readOnly": false },
+    { "name": "update_note", "scope": "notes:write", "readOnly": false },
+    { "name": "star_note", "scope": "notes:write", "readOnly": false },
+    { "name": "delete_note", "scope": "notes:write", "readOnly": false }
   ]
 }

@@ -6,7 +6,7 @@
     {
       "name": "whatevernote",
       "source": "./plugins/whatevernote",
-      "description": "Search, read, create and append to your whatevernote notes from Claude, with skills for meeting notes, open tasks and weekly recaps.",
+      "description": "Search, read, create, edit, star and trash your whatevernote notes from Claude, with skills for meeting notes, open tasks, weekly recaps, tidying and merging notes.",
       "homepage": "https://whatevernote.com"
     }
   ]

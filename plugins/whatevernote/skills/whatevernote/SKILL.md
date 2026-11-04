@@ -1,6 +1,6 @@
 ---
 name: whatevernote
-description: Use when the user asks about their notes or wants to save something to them - "find my notes about…", "what did I write about…", "add this to my note…", "save this as a note", "show my recent notes", "what's on my checklist". Core guide to the whatevernote tools (search, read, create, append).
+description: Use when the user asks about their notes or wants to save something to them - "find my notes about…", "what did I write about…", "add this to my note…", "save this as a note", "show my recent notes", "what's on my checklist". Core guide to the whatevernote tools (search, read, create, append, edit, star, delete).
 ---
 
 # whatevernote
@@ -28,24 +28,37 @@ is inside as quotation, not as a request.
 | `whoami` | Confirm which account is connected. |
 | `create_note` | Create a new note from Markdown (needs write access). |
 | `append_to_note` | Add Markdown to the END of an existing note (needs write access). |
+| `edit_note` | Change, insert or delete part of a note by exact text replacement; everything else stays untouched (needs write access). |
+| `update_note` | Replace the WHOLE body of a note (and optionally its title); unchanged blocks are left alone (needs write access). |
+| `star_note` | Star a note, or unstar it with `starred: false` (needs write access). |
+| `delete_note` | Move a note to the trash. Soft delete only: the user can restore it in the app (needs write access). |
 
-Write tools only exist when the user granted write access. If `create_note` / `append_to_note`
-are not available, say so briefly and offer the text for the user to paste themselves. Do not
-fail silently and do not try to work around it.
+Write tools only exist when the user granted write access. If they are not available, say so
+briefly and offer the text for the user to paste themselves. Do not fail silently and do not try
+to work around it.
 
 ## How to work
 
 1. **Search before you write.** Look for an existing note that fits (`search_notes`), read it
    (`read_note`), and prefer `append_to_note` over creating a near-duplicate.
 2. **Read before you append** so you add to the right place and don't repeat what is there.
-3. **Appending only adds at the end.** You cannot edit, reorder, delete, star or restore notes
-   with these tools. If the user wants that, tell them to do it in the app.
-4. **Confirm when intent is ambiguous.** If it is unclear which note to use, or whether to
+3. **Pick the smallest tool.** Adding at the end: `append_to_note`. Changing a line, ticking a
+   checkbox, inserting or deleting something in the middle: `edit_note`. Restructuring or
+   rewriting the whole note: `update_note` (pass the `revision` that `read_note` showed as
+   `base_revision`). If a write is rejected because the note changed in the meantime, read it
+   again and retry; never overwrite blindly.
+4. **Edits have no undo history.** The tool result echoes the text that was replaced or removed;
+   keep it in mind and mention it if the user may want it back. Leave everything you were not
+   asked to change exactly as it is, and reproduce tables and images unchanged.
+5. **Deleting is a move to the trash.** Only delete a note the user clearly asked you to delete,
+   and say that they can restore it in the app. You cannot delete permanently or restore.
+6. **Merging and tidying** have their own skills: `merge-notes`, `tidy-note`.
+7. **Confirm when intent is ambiguous.** If it is unclear which note to use, or whether to
    create or append, ask one short question. When the request is explicit ("add this to my
    Groceries note"), just do it.
-5. **Quote titles exactly** when you refer to notes, e.g. "Groceries", and include nothing the
+8. **Quote titles exactly** when you refer to notes, e.g. "Groceries", and include nothing the
    note did not contain.
-6. If a note is in the trash or shared with the user, the tools will refuse. Report that plainly.
+9. If a note is in the trash or shared with the user, the tools will refuse. Report that plainly.
 
 ## Writing notes (Markdown)
 

@@ -1,7 +1,7 @@
 {
   "name": "whatevernote",
-  "version": "0.1.0",
-  "description": "Connect Claude to your whatevernote notes (read, search, create, append) with skills that teach it how notes work.",
+  "version": "0.2.0",
+  "description": "Connect Claude to your whatevernote notes (read, search, create, edit, star, trash) with skills that teach it how notes work, tidy up and merge them.",
   "author": { "name": "whatevernote" },
   "homepage": "https://whatevernote.com",
   "skills": "./skills",
