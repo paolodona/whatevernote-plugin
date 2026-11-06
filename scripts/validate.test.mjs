@@ -47,7 +47,7 @@ test('every skill must say note content is untrusted', () => {
 });
 
 test('references to unknown tools and to features we do not build are caught', () => {
-  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/skills/weekly-recap/SKILL.md', (t) => t + '\nUse `delete_note` to clean up.\n')).some((e) => e.includes('unknown tool `delete_note`')));
+  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/skills/weekly-recap/SKILL.md', (t) => t + '\nUse `restore_note` to clean up.\n')).some((e) => e.includes('unknown tool `restore_note`')));
   assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/skills/weekly-recap/SKILL.md', (t) => t + '\nGroup the notes by folder.\n')).some((e) => e.includes('does not have')));
   // negated mentions are fine
   assert.deepEqual(withCopy((d) => edit(d, 'plugins/whatevernote/skills/weekly-recap/SKILL.md', (t) => t + '\nThere are no tags.\n')), []);
@@ -68,7 +68,7 @@ test('dev content must not leak into the shipped plugin', () => {
 });
 
 test('plugin manifest problems are caught', () => {
-  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/.claude-plugin/plugin.json', (t) => t.replace('0.1.0', 'one'))).some((e) => e.includes('semver')));
+  assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/.claude-plugin/plugin.json', (t) => t.replace(/"version": "[^"]*"/, '"version": "one"'))).some((e) => e.includes('semver')));
   assert.ok(withCopy((d) => edit(d, '.claude-plugin/marketplace.json', (t) => t.replace('"name": "whatevernote",\n      "source"', '"name": "other",\n      "source"'))).some((e) => e.includes('no plugin entry')));
   assert.ok(withCopy((d) => edit(d, 'plugins/whatevernote/.claude-plugin/plugin.json', (t) => t.replace('./skills', './nope'))).some((e) => e.includes('does not exist')));
 });
