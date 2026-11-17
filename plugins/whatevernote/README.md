@@ -15,6 +15,9 @@ Work with your whatevernote notes by just asking Claude.
 - "Tidy up my to-do list" (removes duplicate tasks, fixes checkboxes and list formatting)
 - "Merge my two Lisbon notes" (combines them into one and trashes the other)
 
+- "Set up my note preferences" (short notes, checkboxes, new tasks at the top - Claude remembers
+  your style in a note called "whatevernote preferences")
+
 ## Getting started
 
 1. Install the plugin.
