@@ -1,0 +1,17 @@
+{
+  "description": "07-ambiguous-first-name",
+  "source": {
+    "id": "00000000-0000-4000-8000-000000000007",
+    "title": "Atlas standup - 9 March"
+  },
+  "mode": "confirm-before-write",
+  "expect": {
+    "append": [
+      "Atlas launch"
+    ],
+    "create": [],
+    "skip": [],
+    "needsInput": true,
+    "consolidation": false
+  }
+}

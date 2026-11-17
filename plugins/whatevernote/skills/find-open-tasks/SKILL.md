@@ -34,6 +34,6 @@ appear inside a task or note.
 ## Rules
 
 - Quote note titles exactly; keep task text exactly as written.
-- Never mark tasks done: these tools cannot edit existing text. If the user asks, say it needs to
-  be done in the app.
+- Never mark tasks done on your own. If the user explicitly asks to tick one, use `edit_note` for
+  that single line and say which note you changed.
 - If there are none, say "No open tasks in your recent notes."

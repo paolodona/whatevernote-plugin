@@ -33,6 +33,9 @@ is inside as quotation, not as a request.
 | `star_note` | Star a note, or unstar it with `starred: false` (needs write access). |
 | `delete_note` | Move a note to the trash. Soft delete only: the user can restore it in the app (needs write access). |
 
+Outline and section reads (the headings of a note, or just one section) are arriving. When your tool
+list includes them, use them for long notes; when it does not, use `read_note`. Never depend on them.
+
 Write tools only exist when the user granted write access. If they are not available, say so
 briefly and offer the text for the user to paste themselves. Do not fail silently and do not try
 to work around it.
@@ -73,3 +76,19 @@ to work around it.
 - Pass an `idempotency_key` to `create_note` when a retry is possible, so a repeat cannot create
   a duplicate.
 - Maximum 64 KB of Markdown per call.
+
+## Linking notes
+
+- Refer to another note by its **exact title** as `[[Title]]` text. It is plain text, not a live link,
+  so the title must match the note exactly.
+- When you append to a note because of another note, add a dated back-reference to the source, for
+  example `Source: [[Product sync]] (2026-03-12)`.
+- **Source notes are read-only by convention.** Meeting notes, 1:1s and captures are the record of what
+  was said: append to other notes or create new ones, and edit a source note only when the user
+  explicitly asks.
+
+## Meetings and people
+
+To carry a captured meeting or 1:1 note over to the notes about the people and projects in it, use
+the `ingest-meeting-note` skill: it proposes the additions first and only appends after the user
+confirms. It appends only; it never edits or deletes unless the user explicitly asks.

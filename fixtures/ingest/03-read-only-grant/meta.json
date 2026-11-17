@@ -1,0 +1,18 @@
+{
+  "description": "03-read-only-grant",
+  "source": {
+    "id": "00000000-0000-4000-8000-000000000003",
+    "title": "1:1 Alice Johnson - 12 March"
+  },
+  "mode": "read-only",
+  "expect": {
+    "append": [
+      "Alice Johnson",
+      "Atlas launch"
+    ],
+    "create": [],
+    "skip": [],
+    "needsInput": false,
+    "consolidation": false
+  }
+}

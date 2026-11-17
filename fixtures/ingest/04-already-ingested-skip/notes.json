@@ -1,0 +1,12 @@
+[
+  {
+    "id": "00000000-0000-4000-8000-000000000011",
+    "title": "Alice Johnson",
+    "markdown": "Alice joined in 2025. Works on the Atlas launch.\n\n## 2026-02-10 - 1:1 Alice Johnson - 10 February\nSource: 1:1 Alice Johnson - 10 February (id: 00000000-0000-4000-8000-000000000090)\n- Interested in mentoring\n\n## 2026-03-12 - 1:1 Alice Johnson - 12 March\nSource: 1:1 Alice Johnson - 12 March (id: 00000000-0000-4000-8000-000000000004)\n- Comfortable moving the Atlas beta to 24 March\n- Wants a growth plan conversation next quarter\n- [ ] Alice: draft the beta announcement (Friday)\n"
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000012",
+    "title": "Atlas launch",
+    "markdown": "Atlas is the Q2 product launch.\n\n## 2026-02-24 - Atlas kickoff\nSource: Atlas kickoff (id: 00000000-0000-4000-8000-000000000091)\n- Target beta: 17 March\n- [ ] Sam: confirm launch budget\n"
+  }
+]

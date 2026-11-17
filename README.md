@@ -1,6 +1,6 @@
 # whatevernote for Claude
 
-Search, read, create and append to your [whatevernote](https://whatevernote.com) notes from
+Search, read, create, append to and edit your [whatevernote](https://whatevernote.com) notes from
 Claude, plus skills for meeting notes, open tasks and weekly recaps.
 See [`plugins/whatevernote/README.md`](plugins/whatevernote/README.md) for what you can ask.
 

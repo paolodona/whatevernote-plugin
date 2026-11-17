@@ -1,0 +1,19 @@
+{
+  "description": "02-new-person-needs-name-confirmation",
+  "source": {
+    "id": "00000000-0000-4000-8000-000000000002",
+    "title": "Sync with Priya Nair"
+  },
+  "mode": "confirm-before-write",
+  "expect": {
+    "append": [
+      "Atlas launch"
+    ],
+    "create": [
+      "Priya Nair"
+    ],
+    "skip": [],
+    "needsInput": false,
+    "consolidation": false
+  }
+}

@@ -8,12 +8,20 @@ Work with your whatevernote notes by just asking Claude.
 - "Add this to my Groceries note: oat milk, bread"
 - "Save this as a note" (paste anything)
 - "Capture these meeting notes" (turns a call or transcript into one note with checkbox action items)
+- "Update Alice's and the Atlas notes from that 1:1" (Claude shows exactly what it would add to each
+  person and project note, and adds it only after you say yes; needs write access)
 - "What are my open tasks?"
 - "Give me a recap of my week"
 - "Change the second step in my Launch plan note" (edits the middle of a note, not just the end)
 - "Star my Groceries note" / "Move my old Lisbon note to the trash"
 - "Tidy up my to-do list" (removes duplicate tasks, fixes checkboxes and list formatting)
 - "Merge my two Lisbon notes" (combines them into one and trashes the other)
+
+When Claude carries a meeting over to other notes it only adds to the end of them, and it treats your
+meeting notes and captures as read-only unless you ask it to change one. For notes about a person or
+project, name the note with the full name or project name so Claude can find it again;
+you can put a nickname in the title like `Alice Johnson (aka Ali)`. Claude refers to other notes by
+exact title as `[[Title]]`.
 
 ## Getting started
 
